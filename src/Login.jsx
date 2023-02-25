@@ -3,6 +3,7 @@ import styled from "styled-components"
 import TypeWriterEffect from 'typewriter-effect'
 import { useState ,useEffect} from 'react'
 
+
 const DIV =styled.div`
     
     width: 100%;
@@ -11,7 +12,7 @@ const DIV =styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(45deg, #1b1f21, #8febff);
+    background: linear-gradient(90deg,#1b1f21,#8febff);
     .text{
       width: 50%;
       font-size: 3rem;
@@ -31,10 +32,9 @@ const DIV =styled.div`
       border-radius: 5px;
       outline: none;
       box-sizing: border-box;
-      overflow: hidden;
+      /* overflow: hidden; */
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      transition-timing-function: ease-in-out;
-      transition-duration: 0.7s;
+      
       margin-top: 20px;
       
       
