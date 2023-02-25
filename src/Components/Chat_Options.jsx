@@ -3,12 +3,12 @@ import styled from 'styled-components'
 
 
 const Chat_opt = styled.div`
-    width: 10%;
+    width: 15%;
     height: 100vh;
     text-align: center;
     .Opt_ul{
         height: 100vh;
-        font-size: 1rem;
+        font-size: 1.2rem;
         font-weight: 600;
         font-family: Arial, Helvetica, sans-serif;
         list-style: none;

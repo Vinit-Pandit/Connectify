@@ -1,6 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useState } from 'react'
+import Message from './Message'
+
 
 const Chat_Box = styled.div`
     
@@ -8,14 +10,15 @@ const Chat_Box = styled.div`
     /* overflow: hidden; */
     position: relative;
     width: 70%;
-    overflow: hidden;
-    background: #7ccadb;
+    /* overflow: hidden; */
+    overflow: auto;
+    
+    background: linear-gradient(45deg,black,#74d9e429);
     border-radius: 8px;
     box-sizing: border-box;
     box-shadow: 0px 0px 15px #000000;
-    border: 10px solid #2b5d60;
-    /* display: flex; */
-    /* flex-direction: column; */
+    border: 10px solid #3a3f3f;
+    
     
     
 
@@ -26,7 +29,8 @@ const Chat_Box = styled.div`
       height: 80px;
      
       position: relative;
-      background: #3272767d;
+      background: #336e72;
+      /* background-color: #3ebdc6; */
       /* display: flex; */
       /* text-align: center; */
       
@@ -53,21 +57,23 @@ const Chat_Box = styled.div`
     }
     .Participants{
       display: flex;
+      color: #000000;
       gap: 10px;
       list-style: none;
       margin: 5px 0px;
       font-weight: normal;
-      opacity: 0.5;
+      opacity: 0.6;
       font-size: 1rem;
       font-family: sans-serif;
       letter-spacing: 0.015rem;
 
     }
-    .message{
-      position: absolute;
-      width: 100%;
-      height:60px;
-      bottom: 0;
+    .Inpmessage{
+      position: fixed;
+      height: 60px;
+      bottom: 12px;
+      width: 67%;
+      margin: 0 5px;
       
      
     }
@@ -78,7 +84,7 @@ const Chat_Box = styled.div`
       height: 60px;
       outline: none;
       border: none;
-      border-radius: 7px;
+      border-radius: 10px;
       font-size: 1.1rem;
       font-family: Arial, Helvetica, sans-serif;
       letter-spacing: 0.02rem;
@@ -102,6 +108,8 @@ const Chat_Box = styled.div`
       color: black;
       
     }
+
+  
   
 
 
@@ -139,7 +147,26 @@ export default function Chat_window() {
 
           </div>
         </div>
-        <div className="message"  value={InpValue} onChange={(e)=>{setValue(e.target.value)}}>
+
+        
+
+        <Message message="this is the first text i write" dir="left"></Message>
+        {/* <Message message="this is the second text i write" dir="right"></Message>
+        <Message message="this is the second text i write" dir="right"></Message>
+        <Message message="this is the second text i write" dir="right"></Message>
+        <Message message="this is the second text i write" dir="right"></Message>
+        <Message message="this is the second text i write" dir="right"></Message>
+        <Message message="this is the second text i write" dir="right"></Message>
+        <Message message="this is the second text i write" dir="right"></Message>
+        <Message message="this is the second text i write" dir="right"></Message>
+        <Message message="this is the second text i write" dir="right"></Message>
+        <Message message="this is the second text i write" dir="right"></Message>
+        <Message message="this is the second text i write" dir="right"></Message>
+        <Message message="this is the second text i write" dir="right"></Message> */}
+
+        
+
+        <div className="Inpmessage"  value={InpValue} onChange={(e)=>{setValue(e.target.value)}}>
 
           <input type="text"  className='TypeBoard'  placeholder='Type Your Message' />
           <button className='Send' onClick={Handle_Click}>
