@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import styled from 'styled-components'
 import { useState } from 'react'
 import Message from './Message'
@@ -11,8 +11,8 @@ const Chat_Box = styled.div`
     position: relative;
     width: 70%;
     /* overflow: hidden; */
-    overflow: auto;
-    
+    /* overflow: auto; */
+    overflow-y: auto;
     background: linear-gradient(45deg,black,#74d9e429);
     border-radius: 8px;
     box-sizing: border-box;
@@ -108,75 +108,91 @@ const Chat_Box = styled.div`
       color: black;
       
     }
-
-  
-  
-
-
-    
-    
-    
-
-  
 `
 
 
-export default function Chat_window() {
+export default function Chat_window(props) {
+  const InputRef = useRef(null)
+  
+  const [MessagesAry, setMessagesAry] = useState([{message : "" , msgside :""}])
+  // const [MessagesAry, setMessagesAry] = useState([{message : "hello" , msgside :"right"}])
 
-  const [InpValue , setValue] = useState(" ")
-  console.log(InpValue)
-  const participants = ["participants1" , "participants2","participants3","participants4"]
+  const socket = io("http://localhost:8000")
 
-  const Handle_Click =(e)=>{
-    
-    setValue("")
-    document.getElementsByClassName('TypeBoard')[0].value =""
+  console.log(MessagesAry)
+  const appendMsg=(msg , side)=>{
+    setMessagesAry([...MessagesAry , {message:msg , msgside:side} ])
+  }
+
+  socket.on('recive' , data=>{
+    appendMsg(`${data.message}` , "left")
+  })
+  
+
+
+
+
+
+  const participants = ["participants1", "participants2", "participants3", "participants4"]
+
+  const Handle_Click = (e) => {
+    console.log(InputRef.current.value)
+    if (InputRef.current.value.trim()!="") {
+      // setMessagesAry([...MessagesAry, {message:`You:${InputRef.current.value}` , side:"right"}])
+      appendMsg(`You:${InputRef.current.value}` , 'right')
+    }
+
+
+
+
+    InputRef.current.value = ""
   }
   return (
     <Chat_Box>
-        <div className="Window_head">
-          <div className="Headtext">
-            <span className='Chat_type'>Globel</span>
-            <ul className='Participants'> 
-              <li>{participants[0]}</li>
-              <li>{participants[1]}</li>
-              <li>{participants[2]}</li>
-              <li>{participants[3]}</li>
-              
-            </ul>
+      <div className="Window_head">
+        <div className="Headtext">
+          <span className='Chat_type'>{props.Option}</span>
+          <ul className='Participants'>
+            <li>{participants[0]}</li>
+            <li>{participants[1]}</li>
+            <li>{participants[2]}</li>
+            <li>{participants[3]}</li>
 
-          </div>
+          </ul>
+
         </div>
+      </div>
 
-        
 
-        <Message message="this is the first text i write" dir="left"></Message>
-        {/* <Message message="this is the second text i write" dir="right"></Message>
-        <Message message="this is the second text i write" dir="right"></Message>
-        <Message message="this is the second text i write" dir="right"></Message>
-        <Message message="this is the second text i write" dir="right"></Message>
-        <Message message="this is the second text i write" dir="right"></Message>
-        <Message message="this is the second text i write" dir="right"></Message>
-        <Message message="this is the second text i write" dir="right"></Message>
-        <Message message="this is the second text i write" dir="right"></Message>
-        <Message message="this is the second text i write" dir="right"></Message>
-        <Message message="this is the second text i write" dir="right"></Message>
-        <Message message="this is the second text i write" dir="right"></Message>
-        <Message message="this is the second text i write" dir="right"></Message> */}
+      <div>
+        {MessagesAry.map((msg, index) => {
+          if (msg.message.trim()!="") {
+            return <Message message={`${msg.message}`} dir={msg.msgside} key={index} />
+            
+          }
 
-        
 
-        <div className="Inpmessage"  value={InpValue} onChange={(e)=>{setValue(e.target.value)}}>
+        })}
 
-          <input type="text"  className='TypeBoard'  placeholder='Type Your Message' />
-          <button className='Send' onClick={Handle_Click}>
-          <i class="fa-solid fa-paper-plane"></i>
-          </button>
-         
-        </div>
-         
+
+      </div>
+
+
+
+
+
+
+      <div className="Inpmessage" >
+
+        <input type="text" className='TypeBoard' ref={InputRef} placeholder='Type Your Message' />
+        <button className='Send' onClick={Handle_Click}>
+          <i className="fa-solid fa-paper-plane"></i>
+        </button>
+
+      </div>
+
 
     </Chat_Box>
-    
+
   )
 }

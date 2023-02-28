@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import styled from "styled-components"
 import TypeWriterEffect from 'typewriter-effect'
-import { useState ,useEffect} from 'react'
+import { useState ,useEffect , Ref} from 'react'
+import { Link } from 'react-router-dom'
 
 
 const DIV =styled.div`
@@ -22,11 +23,11 @@ const DIV =styled.div`
       
     }
     .UserName{
-      height: 40px;
+      height: 50px;
       display: block;
       border: none;
       text-align: center;
-      width: 250px;
+      width: 270px;
       font-size: 1.5rem;
       font-weight: 600;
       border-radius: 5px;
@@ -46,29 +47,67 @@ const DIV =styled.div`
       text-decoration: none;
       outline: none;
       color: #4499b5;
+      transition-duration: 0.5s;
+      transition-timing-function: ease-in-out;
+      transform: translateX(35px);
+      cursor: pointer;
+      
       
     }
     
 
     
 `
-export default function Login() {
+export default function Login(props) {
+  
+  const InputRef = useRef()
  
   function handleInit(typewriter){
-    console.log(typewriter)
+    
     typewriter.typeString('Chat With Your Buddies, ')
     typewriter.typeString('Enter your username ')
     typewriter.deleteChars(1)
     typewriter.start()
     
     
-   
-
+    
+    
   }
-
+  const HandleRedirect =(e)=>{
+   
+    
+    
+    if (InputRef.current.value.trim() ==='') {
+      console.log("i am running")
+      e.preventDefault()
+      
+      InputRef.current.placeholder ="User name"
+      InputRef.current.style.border = "2px solid red"
+    } 
+    else{
+      props.setNameValue(`${InputRef.current.value}`)
+      // window.location.pathname += "Dashboard"
+      
+    }
+    
+    
+  }
   
-
- 
+  const HandleInputChange =(e)=>{
+    // props.setNameValue(`${InputRef.current.value}`)
+    
+    
+    
+  }
+  
+  
+  
+  
+  // useEffect(()=>{
+    
+  //   props.setNameValue(`${InputRef.current.value}`)
+    
+  // })
 
  
 
@@ -89,8 +128,10 @@ export default function Login() {
         
           
         />
-        <input type="text" className='UserName'  />
-        <a href="Dashboard" className='LetsGoBtn'>Lets Go</a>
+        
+        <input type="text" placeholder='' className='UserName'ref={InputRef} onChange={HandleInputChange}/>
+        <Link   className='LetsGoBtn' to='Dashboard' onClick={HandleRedirect}>Lets Go</Link>
+        
       </div>
 
     </DIV>

@@ -12,9 +12,10 @@ const FrSt = styled.div`
     font-size: 1.2rem;
     color: white;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
+    cursor: pointer;
 
     span{
-        margin: 10px;
+        margin: 15px;
         /* max-height:10px; */
     }
     .user{
@@ -38,9 +39,9 @@ export default function FriendStatus(propes) {
         <span><i class="fa-solid fa-circle circle"></i><i class="fa-solid fa-user user"></i>     {propes.arr[0]}</span> */}
 
     {propes.arr.map(element => (
-      <span key={element}>
+      <span key={element.name}>
         <i className="fa-solid fa-circle circle" style={{color:`${element.online?"#00ef00" : "#ff5200"}`}}></i>
-        <i className="fa-solid fa-user user"></i>  {"  " /* just for spaces*/} 
+        <i className="fa-sharp fa-regular fa-user user"></i> {"  " /* just for spaces*/} 
         {element.name}
       </span>
     ))}

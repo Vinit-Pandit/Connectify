@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import styled from 'styled-components'
 
 
@@ -6,6 +6,9 @@ const Chat_opt = styled.div`
     width: 15%;
     height: 100vh;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     .Opt_ul{
         height: 100vh;
         font-size: 1.2rem;
@@ -45,22 +48,57 @@ const Chat_opt = styled.div`
         color: #84b2c3;
         
     }
+
+    .UserNameProf{
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #000000;
+        color: white;
+        border-radius: 5px;
+        height: 50px;
+        width: 70%;
+        font-size: 1.2rem;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-weight: 500;
+        margin: 20px ;
+        letter-spacing: 0.1rem;
+        
+    
+        
+
+    }
     
     
 
 `
 
-export default function Chat_Options() {
+export default function Chat_Options(props) {
+    
+    const HandleClick = (e)=>{
+        
+        
+        document.querySelectorAll('.options').forEach((elm)=>{
+            elm.classList.remove('selected')
+            
+        })
+        
+        
+        e.target.classList.add('selected')
+        props.setOp(`${e.target.name}`)
+    }
   return (
     <Chat_opt>
+        <div className="UserNameProf">
+            <i className="fa-solid fa-user user">  </i>{props.NameValue}
+        </div>
         <ul className='Opt_ul'>
-            {/* <li>Globel</li>
-            <li>Broadcast</li>
-            <li>Group</li> */}
-            <a href="#" className='options selected'>Globel <i class="fa-solid fa-globe icon "></i></a> 
-            <a href="#" className='options '>Broadcast <i class="fa-solid fa-podcast icon"></i></a>
-            <a href="#" className='options '>Group <i class="fa-sharp fa-solid fa-people-group icon"></i></a>
-            <a href="#" className='options '>Privite <i class="fa-solid fa-user-group icon"></i></a>
+
+            <a  className='options selected' name="Globel" onClick={HandleClick}>Globel <i className="fa-solid fa-globe icon "></i></a> 
+            <a  className='options ' name="Broadcast" onClick={HandleClick}>Broadcast <i className="fa-solid fa-podcast icon"></i></a>
+            <a  className='options ' name="Group" onClick={HandleClick}>Group <i className="fa-sharp fa-solid fa-people-group icon"></i></a>
+            <a  className='options ' name="Privite" onClick={HandleClick}>Privite <i className="fa-solid fa-user-group icon"></i></a>
         </ul>
     </Chat_opt>
   )

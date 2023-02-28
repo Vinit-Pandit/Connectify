@@ -1,4 +1,5 @@
 import React from 'react'
+import { useState } from 'react'
 import styled from 'styled-components'
 import Chat_window from './Components/Chat_window'
 import Chat_Options from './Components/Chat_Options'
@@ -14,8 +15,11 @@ const DIV =styled.div `
 
   
 `
-export default function Dashboard() {
-
+export default function Dashboard(Props) {
+  const socket = io("http://localhost:8000")
+  const [Option ,setOption] =useState('Globel')
+  const msgObject =[];
+  
   const  FriendArr = [
     {name:"name1" , online:true},
     {name:"name2" , online:false},
@@ -26,8 +30,8 @@ export default function Dashboard() {
   ]
   return (
     <DIV id='Dashboard'>
-      <Chat_Options/>
-      <Chat_window/>
+      <Chat_Options setOp={setOption} NameValue={Props.NameValue}/>
+      <Chat_window Option={Option} NameValue={Props.NameValue}/>
       <FriendStatus arr={FriendArr}/>
       
 
