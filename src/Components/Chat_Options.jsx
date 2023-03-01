@@ -75,6 +75,7 @@ const Chat_opt = styled.div`
 `
 
 export default function Chat_Options(props) {
+    console.log(props.NameNsocket)
     
     const HandleClick = (e)=>{
         
@@ -91,7 +92,7 @@ export default function Chat_Options(props) {
   return (
     <Chat_opt>
         <div className="UserNameProf">
-            <i className="fa-solid fa-user user">  </i>{props.NameValue}
+            <i className="fa-solid fa-user user">  </i>{props.NameNsocket.Name}
         </div>
         <ul className='Opt_ul'>
 

@@ -7,16 +7,18 @@ var io = require('socket.io')(server, {
     }
 });
 
-const user ={}
+const userSocketMap ={}
 
 io.on('connection' , (socket)=>{
     socket.on('new-user-join' , (name)=>{
-        user[socket.id]= name;
+        console.log("new_connection ")
+        userSocketMap[socket.id] = socket;
         socket.broadcast.emit('user-join' ,name)
 
     })
 
     socket.on('send' , (message)=>{
-        socket.broadcast.emit('recive' ,{message:message , name:user[socket.id]})
+        console.log("send is call")
+        userSocketMap[socket.id].broadcast.emit('recive' ,message)
     })
 })

@@ -30,8 +30,8 @@ export default function Dashboard(Props) {
   ]
   return (
     <DIV id='Dashboard'>
-      <Chat_Options setOp={setOption} NameValue={Props.NameValue}/>
-      <Chat_window Option={Option} NameValue={Props.NameValue}/>
+      <Chat_Options setOp={setOption} NameNsocket={Props.NameNsocket}/>
+      <Chat_window Option={Option} NameNsocket={Props.NameNsocket}/>
       <FriendStatus arr={FriendArr}/>
       
 

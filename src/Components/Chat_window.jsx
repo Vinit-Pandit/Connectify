@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { useState } from 'react'
 import Message from './Message'
@@ -12,7 +12,7 @@ const Chat_Box = styled.div`
     width: 70%;
     /* overflow: hidden; */
     /* overflow: auto; */
-    overflow-y: auto;
+    
     background: linear-gradient(45deg,black,#74d9e429);
     border-radius: 8px;
     box-sizing: border-box;
@@ -45,7 +45,7 @@ const Chat_Box = styled.div`
       letter-spacing: 0.03rem;
     }
     .Headtext{
-      position: relative;
+      position: sticky;
       width: 50%;
       height: 100%;
       display: flex;
@@ -108,45 +108,92 @@ const Chat_Box = styled.div`
       color: black;
       
     }
+
+    .ChatContainer{
+      height: 77%;
+      position: relative;
+      overflow-y: auto;
+    }
+
+    
 `
 
 
 export default function Chat_window(props) {
   const InputRef = useRef(null)
   
+  
   const [MessagesAry, setMessagesAry] = useState([{message : "" , msgside :""}])
-  // const [MessagesAry, setMessagesAry] = useState([{message : "hello" , msgside :"right"}])
 
-  const socket = io("http://localhost:8000")
+  
 
-  console.log(MessagesAry)
+  
+  
+  
+  props.NameNsocket.Socket.on('user-join' , (name)=>{
+    appendMsg(`${name} join the chat `)
+  })
+
   const appendMsg=(msg , side)=>{
-    setMessagesAry([...MessagesAry , {message:msg , msgside:side} ])
+    
+    setMessagesAry(MessagesAry.concat({message:msg , msgside:side}))
+    console.log(MessagesAry)
+  }
+  
+  props.NameNsocket.Socket.on('recive' , (data)=>{
+    // console.log(`this is name ${props.NameNSocket.Name.trim()}  and this is Name from recieve ${data.Uname.trim()}`)
+    
+    if (data.Uname.trim()!=props.NameNsocket.Name.trim()) {
+      console.log("recive")
+      console.log("under the if")
+      appendMsg(`${data.message}` , "left")
+      props.NameNsocket.Socket.off('recive')
+      
+    }
+    else{
+      console.log("else is running")
+    }
+  })
+  
+  
+  // socket.on('user-join' , name=>{
+    //   if (name!=props.NameValue) {
+  //     appendMsg(`${name} join the chat`)
+  
+  //   }
+  // })
+  
+  
+  
+  
+  
+  
+  const participants = ["participants1", "participants2", "participants3", "participants4"]
+  
+  const Handle_Click = (e) => {
+    console.log(InputRef.current.value)
+    if (InputRef.current.value.trim()!="") {
+      
+      appendMsg(`You:${InputRef.current.value}` , 'right')
+      
+      console.log("Under the handle click")
+      
+      
+      props.NameNsocket.Socket.emit('send' , {message:(InputRef.current.value) , Uname : (props.NameNsocket.Name)});
+    }
+
+    InputRef.current.value = ""
+    
   }
 
-  socket.on('recive' , data=>{
-    appendMsg(`${data.message}` , "left")
-  })
+
+  
   
 
 
 
 
 
-  const participants = ["participants1", "participants2", "participants3", "participants4"]
-
-  const Handle_Click = (e) => {
-    console.log(InputRef.current.value)
-    if (InputRef.current.value.trim()!="") {
-      // setMessagesAry([...MessagesAry, {message:`You:${InputRef.current.value}` , side:"right"}])
-      appendMsg(`You:${InputRef.current.value}` , 'right')
-    }
-
-
-
-
-    InputRef.current.value = ""
-  }
   return (
     <Chat_Box>
       <div className="Window_head">
@@ -164,16 +211,18 @@ export default function Chat_window(props) {
       </div>
 
 
-      <div>
+      <div className='ChatContainer'>
+
+        {}
         {MessagesAry.map((msg, index) => {
           if (msg.message.trim()!="") {
             return <Message message={`${msg.message}`} dir={msg.msgside} key={index} />
             
           }
-
-
+          
         })}
 
+  
 
       </div>
 
@@ -184,7 +233,9 @@ export default function Chat_window(props) {
 
       <div className="Inpmessage" >
 
-        <input type="text" className='TypeBoard' ref={InputRef} placeholder='Type Your Message' />
+        <input type="text" className='TypeBoard' ref={InputRef} placeholder='Type Your Message' onKeyDown={(e)=>{
+          e.key=="Enter" ? Handle_Click() :null
+        }}/>
         <button className='Send' onClick={Handle_Click}>
           <i className="fa-solid fa-paper-plane"></i>
         </button>

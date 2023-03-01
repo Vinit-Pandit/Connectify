@@ -3,6 +3,9 @@ import styled from "styled-components"
 import TypeWriterEffect from 'typewriter-effect'
 import { useState ,useEffect , Ref} from 'react'
 import { Link } from 'react-router-dom'
+import Dashboard from './Dashboard'
+import { useNavigate } from 'react-router-dom'
+import { redirect } from 'react-router-dom'
 
 
 const DIV =styled.div`
@@ -44,14 +47,20 @@ const DIV =styled.div`
     }
     .LetsGoBtn{
       font-size: 1.8rem;
+      font-weight: 750;
       text-decoration: none;
+      background: none;
+      border: none;
       outline: none;
-      color: #4499b5;
-      transition-duration: 0.5s;
-      transition-timing-function: ease-in-out;
-      transform: translateX(35px);
-      cursor: pointer;
+      color: #54bddd;
+      transition-duration: 0.2s;
       
+      /* transform: translateX(35px); */
+      cursor: pointer;
+    }
+    
+    .LetsGoBtn:hover{
+      color: #4499b5;
       
     }
     
@@ -61,7 +70,7 @@ const DIV =styled.div`
 export default function Login(props) {
   
   const InputRef = useRef()
- 
+  const navigate = useNavigate();
   function handleInit(typewriter){
     
     typewriter.typeString('Chat With Your Buddies, ')
@@ -74,40 +83,35 @@ export default function Login(props) {
     
   }
   const HandleRedirect =(e)=>{
+
    
-    
-    
     if (InputRef.current.value.trim() ==='') {
+      
+     
       console.log("i am running")
-      e.preventDefault()
       
       InputRef.current.placeholder ="User name"
       InputRef.current.style.border = "2px solid red"
     } 
     else{
+      console.log("else is runnning")
+      // e.preventDefault()
       props.setNameValue(`${InputRef.current.value}`)
-      // window.location.pathname += "Dashboard"
+      navigate("/Dashboard")
+    
       
     }
     
     
   }
   
-  const HandleInputChange =(e)=>{
-    // props.setNameValue(`${InputRef.current.value}`)
-    
-    
-    
-  }
+
   
   
   
   
-  // useEffect(()=>{
-    
-  //   props.setNameValue(`${InputRef.current.value}`)
-    
-  // })
+  
+  
 
  
 
@@ -129,8 +133,8 @@ export default function Login(props) {
           
         />
         
-        <input type="text" placeholder='' className='UserName'ref={InputRef} onChange={HandleInputChange}/>
-        <Link   className='LetsGoBtn' to='Dashboard' onClick={HandleRedirect}>Lets Go</Link>
+        <input type="text" placeholder='' className='UserName'ref={InputRef} onKeyDown={(e)=>{e.key=="Enter"?HandleRedirect():null}} />
+        <button   className='LetsGoBtn' onClick={HandleRedirect}>Lets Go</button>
         
       </div>
 

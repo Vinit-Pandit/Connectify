@@ -1,17 +1,23 @@
 import { useRef, useState } from 'react'
 import Login from './Login'
-import { BrowserRouter, Routes,Route } from 'react-router-dom'
+import { BrowserRouter, Routes,Route , useNavigate } from 'react-router-dom'
 import Dashboard from './Dashboard'
 
 
+
 function App() {
-  const [NameValue , setNameValue] = useState("")
+  const [SocketNname , setSocketNname] = useState({})
   
-  function GettingName(enterdname) {
+  
+  function GettingNameSocket(enterdname) {
     console.log("function is called")
-    setNameValue(enterdname)
     
-    console.log(NameValue)
+    const socket = io("http://localhost:8000")
+    socket.emit('new-user-join' , enterdname)
+    setSocketNname({Name:`${enterdname}` , Socket :socket})
+    console.log(SocketNname)
+    
+   
   }
    
 
@@ -19,11 +25,11 @@ function App() {
     <BrowserRouter>
       <Routes>
        
-      <Route exact path="/Dashboard" element ={<Dashboard NameValue={NameValue}/>}/>
+      <Route exact path="/Dashboard" element ={<Dashboard NameNsocket={SocketNname}/>}/>
         
       
         
-      <Route path='/' element={<Login setNameValue = {GettingName} NameValue={NameValue}/>}></Route>
+      <Route path='/' element={<Login setNameValue = {GettingNameSocket} />}></Route>
         
       
 
