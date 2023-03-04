@@ -19,6 +19,7 @@ const MsgBox = styled.div`
         font-family: sans-serif;
 
     }
+    
 `
 
 export default function Message(propes) {

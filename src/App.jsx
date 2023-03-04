@@ -15,8 +15,7 @@ function App() {
     const socket = io("http://localhost:8000")
     socket.emit('new-user-join' , enterdname)
     setSocketNname({Name:`${enterdname}` , Socket :socket})
-    console.log(SocketNname)
-    
+   
    
   }
    

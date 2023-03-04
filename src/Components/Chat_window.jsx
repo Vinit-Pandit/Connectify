@@ -123,45 +123,82 @@ export default function Chat_window(props) {
   const InputRef = useRef(null)
   
   
-  const [MessagesAry, setMessagesAry] = useState([{message : "" , msgside :""}])
-
+  // const [MessagesAry, setMessagesAry] = useState([{message : "" , msgside :""}])
   
-
-  
-  
-  
-  props.NameNsocket.Socket.on('user-join' , (name)=>{
-    appendMsg(`${name} join the chat `)
-  })
-
-  const appendMsg=(msg , side)=>{
+  const [MessagesAry , setMessagesAry] = useState(
+    {
+      Globel:{Messages:[{msg:"" , side:"" , sender:""}]} ,
+      Broadcast:{Messages:[{msg:"", side:"" , sender:""}]} , 
+      Group:{Messages:[{msg:"" , side:"" , sender:""}]}  , 
+      Privite:{Messages:[{msg:"" , side:"" , sender:""}]}
     
-    setMessagesAry(MessagesAry.concat({message:msg , msgside:side}))
-    console.log(MessagesAry)
+    })
+    console.log("above the effect")
+    
+    useEffect(()=>{
+      // Handling the recieve event ******************************************************
+      console.log(`useEffect is running for component instance ${props.id}`);
+      console.log(MessagesAry)
+      props.NameNsocket.Socket.on('user-join' , (name)=>{
+        appendMsg(`${name} join the chat ` , "left" , "NEW")
+      })
+      props.NameNsocket.Socket.on('recive' , (data)=>{
+   
+    
+        if (data.Uname.trim()!=props.NameNsocket.Name.trim()) {
+          console.log("recive")
+          console.log("under the if")
+          appendMsg(data.message ,"left" , data.Uname)
+          props.NameNsocket.Socket.off('recive')
+          
+        }
+        else{
+          console.log("else is running")
+        }
+      },[MessagesAry])
+
+   
+      return ()=>{
+        console.log("Clean Up is run")
+        
+        props.NameNsocket.Socket.off('recive')
+        props.NameNsocket.Socket.off('user-join')
+      }
+    })
+  
+
+  
+
+  
+  
+  
+ 
+
+ 
+
+  //Append function *****************************************************************
+  const appendMsg=(msg , side , senderName)=>{
+    console.log("under the append")
+    
+    
+    
+    setMessagesAry((MessagesAry)=>{
+      return {
+        ...MessagesAry , [props.Option]:{
+          ...MessagesAry[props.Option] , Messages:[
+            ...MessagesAry[props.Option].Messages ,{msg:msg , side:side , sender:senderName}
+          ]
+        }
+      }
+    })
+
+    
+    
+   
   }
   
-  props.NameNsocket.Socket.on('recive' , (data)=>{
-    // console.log(`this is name ${props.NameNSocket.Name.trim()}  and this is Name from recieve ${data.Uname.trim()}`)
-    
-    if (data.Uname.trim()!=props.NameNsocket.Name.trim()) {
-      console.log("recive")
-      console.log("under the if")
-      appendMsg(`${data.message}` , "left")
-      props.NameNsocket.Socket.off('recive')
-      
-    }
-    else{
-      console.log("else is running")
-    }
-  })
-  
-  
-  // socket.on('user-join' , name=>{
-    //   if (name!=props.NameValue) {
-  //     appendMsg(`${name} join the chat`)
-  
-  //   }
-  // })
+
+ 
   
   
   
@@ -169,17 +206,20 @@ export default function Chat_window(props) {
   
   
   const participants = ["participants1", "participants2", "participants3", "participants4"]
-  
+
+
+  //Handle click and send logic *****************************************************
   const Handle_Click = (e) => {
-    console.log(InputRef.current.value)
+    
+    console.log(MessagesAry.Globel)
     if (InputRef.current.value.trim()!="") {
       
-      appendMsg(`You:${InputRef.current.value}` , 'right')
+      appendMsg(`${InputRef.current.value}` , 'right' , props.NameNsocket.Name)
       
       console.log("Under the handle click")
-      
-      
       props.NameNsocket.Socket.emit('send' , {message:(InputRef.current.value) , Uname : (props.NameNsocket.Name)});
+      
+      
     }
 
     InputRef.current.value = ""
@@ -200,10 +240,13 @@ export default function Chat_window(props) {
         <div className="Headtext">
           <span className='Chat_type'>{props.Option}</span>
           <ul className='Participants'>
-            <li>{participants[0]}</li>
-            <li>{participants[1]}</li>
-            <li>{participants[2]}</li>
-            <li>{participants[3]}</li>
+            {props.Participents[`${props.Option}`].map((participent, index)=>{
+              return <li key={index}>{participent}</li>
+            })}
+            
+            
+            
+
 
           </ul>
 
@@ -212,11 +255,14 @@ export default function Chat_window(props) {
 
 
       <div className='ChatContainer'>
+       
+        
 
-        {}
-        {MessagesAry.map((msg, index) => {
-          if (msg.message.trim()!="") {
-            return <Message message={`${msg.message}`} dir={msg.msgside} key={index} />
+       
+        {MessagesAry[props.Option].Messages.map((data, index) => {
+          
+          if (data.msg.trim()!="") {
+            return <Message message={`${(data.sender)==(props.NameNsocket.Name)?"You":data.sender}:  ${data.msg}`} dir={data.side} key={index} />
             
           }
           

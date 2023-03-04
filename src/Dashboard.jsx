@@ -18,21 +18,16 @@ const DIV =styled.div `
 export default function Dashboard(Props) {
   const socket = io("http://localhost:8000")
   const [Option ,setOption] =useState('Globel')
+  const [Participents , setParticipents] =useState({Globel:[] , Broadcast:[] , Group:[] , Privite:[]})
+  
   const msgObject =[];
   
-  const  FriendArr = [
-    {name:"name1" , online:true},
-    {name:"name2" , online:false},
-    {name:"name3" , online:true},
-    {name:"name4" , online:false},
-    {name:"name5" , online:true},
-    
-  ]
+ 
   return (
     <DIV id='Dashboard'>
-      <Chat_Options setOp={setOption} NameNsocket={Props.NameNsocket}/>
-      <Chat_window Option={Option} NameNsocket={Props.NameNsocket}/>
-      <FriendStatus arr={FriendArr}/>
+      <Chat_Options setOp={setOption} NameNsocket={Props.NameNsocket} Option={Option}/>
+      <Chat_window Option={Option} NameNsocket={Props.NameNsocket} Participents={Participents}/>
+      <FriendStatus  NameNsocket={Props.NameNsocket} Option={Option} setOp={setOption} Participents={Participents} setParticipents={setParticipents}/>
       
 
     </DIV>

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
 
@@ -26,7 +26,7 @@ const Chat_opt = styled.div`
         text-decoration: none;
         
         color: #9a9a9a;
-        transition-duration: 0.5s;
+        transition-duration: 0.3s;
         cursor: pointer;
         
     }
@@ -75,20 +75,39 @@ const Chat_opt = styled.div`
 `
 
 export default function Chat_Options(props) {
-    console.log(props.NameNsocket)
+    
+
+
+
+
     
     const HandleClick = (e)=>{
         
         
-        document.querySelectorAll('.options').forEach((elm)=>{
-            elm.classList.remove('selected')
+        // document.querySelectorAll('.options').forEach((elm)=>{
+        //     elm.classList.remove('selected')
             
-        })
+        // })
+        const elmOption = (e.target.nodeName=="A")?(e.target):(e.target.parentElement)
+        document.getElementById(props.Option).classList.remove('selected')
+        elmOption.classList.add('selected')
+        props.setOp(`${elmOption.id}`)
+        
+
         
         
-        e.target.classList.add('selected')
-        props.setOp(`${e.target.name}`)
     }
+
+    useEffect(()=>{
+        console.log("useeffect from chat option is running")
+        Array.from(document.getElementsByClassName('options')).forEach((elm)=>{
+            elm.classList.remove("selected")
+            console.log(elm)
+        })
+        const elm = document.getElementById(props.Option)
+        elm.classList.add("selected")
+    })
+    
   return (
     <Chat_opt>
         <div className="UserNameProf">
@@ -96,10 +115,10 @@ export default function Chat_Options(props) {
         </div>
         <ul className='Opt_ul'>
 
-            <a  className='options selected' name="Globel" onClick={HandleClick}>Globel <i className="fa-solid fa-globe icon "></i></a> 
-            <a  className='options ' name="Broadcast" onClick={HandleClick}>Broadcast <i className="fa-solid fa-podcast icon"></i></a>
-            <a  className='options ' name="Group" onClick={HandleClick}>Group <i className="fa-sharp fa-solid fa-people-group icon"></i></a>
-            <a  className='options ' name="Privite" onClick={HandleClick}>Privite <i className="fa-solid fa-user-group icon"></i></a>
+            <a  className='options selected' id="Globel" onClick={HandleClick}>Globel <i className="fa-solid fa-globe icon "></i></a> 
+            <a  className='options ' id="Broadcast" onClick={HandleClick}>Broadcast <i className="fa-solid fa-podcast icon"></i></a>
+            <a  className='options ' id="Group" onClick={HandleClick}>Group <i className="fa-sharp fa-solid fa-people-group icon"></i></a>
+            <a  className='options ' id="Privite" onClick={HandleClick}>Privite <i className="fa-solid fa-user-group icon"></i></a>
         </ul>
     </Chat_opt>
   )
