@@ -165,10 +165,17 @@ export default function Chat_window(props) {
           props.NameNsocket.Socket.off('recive')
           
         }
-        else{
+        else if(MsgData.type=="Privite"){
           
                     
           props.setParticipents({...props.Participents , [MsgData.type]:[MsgData.Uname]})
+          appendMsg(MsgData.message ,"left" , MsgData.Uname ,MsgData.type)
+        }
+        else{
+          const members = MsgData.Group
+          members.splice(members.indexOf(props.NameNsocket.Name) , 1)
+
+          props.setParticipents({...props.Participents , [MsgData.type]:[...members]})
           appendMsg(MsgData.message ,"left" , MsgData.Uname ,MsgData.type)
         }
           
@@ -241,9 +248,12 @@ export default function Chat_window(props) {
         
         props.NameNsocket.Socket.emit('send' , {message:(InputRef.current.value) , Uname : (props.NameNsocket.Name), type:(props.Option)});
       }
-      else{
-        props.NameNsocket.Socket.emit('send' , {message:(InputRef.current.value) , Uname : (props.NameNsocket.Name), type:(props.Option) ,to:props.Participents.Privite});
+      else if(props.Option=="Privite"){
+        props.NameNsocket.Socket.emit('send' , {message:(InputRef.current.value) , Uname : (props.NameNsocket.Name), type:(props.Option) ,to:props.Participents[props.Option] });
 
+      }
+      else{
+        props.NameNsocket.Socket.emit('send' , {message:(InputRef.current.value) , Uname : (props.NameNsocket.Name), type:(props.Option) ,to:props.Participents[props.Option] , Group:[...props.Participents[props.Option] , props.NameNsocket.Name]});
       }
       
       

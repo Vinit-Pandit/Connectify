@@ -17,10 +17,11 @@ const DIV =styled.div `
 `
 export default function Dashboard(Props) {
   
+  console.log("under the dashborad")
   const [Option ,setOption] =useState('Globel')
   //igonre the broadcast
   const [Participents , setParticipents] =useState({Globel:[] , Broadcast:[] , Group:[] , Privite:[]})
-  console.log("under the dashborad")
+  console.log(Participents)
   
   
     return (

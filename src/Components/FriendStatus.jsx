@@ -49,7 +49,7 @@ const FrSt = styled.div`
       flex-direction: column;
       justify-content: center;
       gap: 20px;
-      height: 100px;
+      height: 130px;
       width: 100%;
       
       
@@ -65,7 +65,8 @@ const FrSt = styled.div`
       background-color: #07070780;
       position: absolute;
       right: 130px;
-      width: 10%;
+      width: 14%;
+      
       /* z-index: 2; */
       /* top: 0px; */
       
@@ -98,8 +99,8 @@ const FrSt = styled.div`
 `
 
 export default function FriendStatus(propes) {
-  const [Friends, setFriends] = useState({ ShowFriends: [], Online: [] })
-  const friendArray = Friends.ShowFriends.map((obj) => obj.friendName)
+  const [Friends, setFriends] = useState({ ShowMembers: [], Online: [] })
+  const friendArray = Friends.ShowMembers.map((obj) => obj.friendName)
 
   useEffect(() => {
     console.log("under the client")
@@ -107,17 +108,24 @@ export default function FriendStatus(propes) {
       console.log(data)
       setFriends({ ...Friends, Online: [...data] })
       console.log(Friends)
+      // console.log(propes.Participents)
+      console.log("after")
       propes.setParticipents({...propes.Participents , Globel:[...data]})
+     
+
+      // console.log(propes.Participents)
+      
       console.log("Under the connected clients")
       
     }, [Friends, propes.NameNsocket.Socket])
 
     return (() => {
       console.log("clean up of the connected client is done")
+      console.log(propes.Participents)
       propes.NameNsocket.Socket.off('Connected_clients')
     })
   } , [])
-  const FriendsORonline = (propes.Option == "Group" ?  friendArray: Friends["Online"])
+  // const FriendsORonline = (propes.Option == "Group" ?  Friends[]: Friends["Online"])
 
   const HandlingBar = (e) => {
 
@@ -145,26 +153,48 @@ export default function FriendStatus(propes) {
     e.target.parentElement.classList.remove('show')
   }
 
-  const HandleAddFriend = (e) => {
+  const HandleAddGroup = (e) => {
     const bar = e.target.parentElement.parentElement
     bar.classList.remove("show")
     const OnlineUsers = Friends.Online
 
     const FriendName = e.currentTarget.dataset.frname
     console.log(friendArray)
-    if (!friendArray.includes(FriendName) && FriendName != propes.NameNsocket.Name) {
+    if (!(Friends.ShowMembers).includes(FriendName) && FriendName != propes.NameNsocket.Name) {
       console.log("friend added")
-      setFriends({ ShowFriends: [...Friends.ShowFriends, { friendName: FriendName, online: (OnlineUsers.includes(FriendName)) }], Online: [...Friends.Online] })
+      // setFriends({ ShowMembers: [...Friends.ShowMembers, { friendName: FriendName, online: (OnlineUsers.includes(FriendName)) }], Online: [...Friends.Online] })
+      setFriends({ ShowMembers: [...Friends.ShowMembers , FriendName], Online: [...Friends.Online] })
+      propes.setParticipents({...propes.Participents , Group:[...propes.Participents.Group , FriendName]})
+      console.log(propes.Participents.Group)
+
 
     }
 
-    console.log(Friends.ShowFriends)
+    console.log(Friends.ShowMembers)
+
+  }
+  const HandleRemoveGroup=(e)=>{
+    const bar = e.target.parentElement.parentElement
+    bar.classList.remove("show")
+    const FriendName = e.currentTarget.dataset.frname
+    console.log(Friends.ShowMembers)
+    const  CurrentMembers =  Friends.ShowMembers
+    console.log( CurrentMembers)
+    const IndexOfFriend = CurrentMembers.indexOf(FriendName)
+    console.log(IndexOfFriend)
+
+    CurrentMembers.splice(0 , 1)
+    setFriends({...Friends , ShowMembers:[...CurrentMembers]})
+    propes.setParticipents({...propes.Participents , Group:[...CurrentMembers]})
+    
+
 
   }
 
   const HandleSendMessage = (e) => {
     console.log("under the sendmesage")
-   
+    const bar = e.target.parentElement.parentElement
+    bar.classList.remove("show")
     propes.setParticipents({...propes.Participents , Privite:[(e.target.dataset.frname)]})
     propes.setOp("Privite")
   }
@@ -181,10 +211,10 @@ export default function FriendStatus(propes) {
       {/* <span className='OnlFri'>Online</span> */}
      
       {console.log("Under the return ")}
-      {FriendsORonline.map((element) => (
+      {((propes.Option=="Group")?(propes.Participents["Group"]):(Friends.Online)).map((element) => (
         <div key={element} onClick={HandlingBar} className="FriendsContainer">
 
-          <i className="fa-solid fa-circle circle" style={{ color: `${element ? "#00ef00" : "#ff5200"}` }}></i>
+          <i className="fa-solid fa-circle circle" style={{ color: "#00ef00" }}></i>
           <i className="fa-sharp fa-regular fa-user user" onClick={HandlingBar}></i> {"  " /* just for spaces*/}
           {console.log(element)}
           {element}
@@ -192,7 +222,8 @@ export default function FriendStatus(propes) {
           <div className="bar"  >
             <i className="fa-solid fa-xmark cross" onClick={CloseTheBar}></i>
             <ul>
-              <li onClick={HandleAddFriend} data-frname={element} >Add friend</li>
+              <li onClick={HandleAddGroup} data-frname={element} >Add To Group</li>
+              <li onClick={HandleRemoveGroup} data-frname={element} >Remove From Group</li>
               <li onClick={HandleSendMessage} data-frname={element}>Send Message</li>
             </ul>
           </div>
