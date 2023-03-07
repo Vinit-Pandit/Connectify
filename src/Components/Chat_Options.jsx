@@ -116,7 +116,7 @@ export default function Chat_Options(props) {
         <ul className='Opt_ul'>
 
             <a  className='options selected' id="Globel" onClick={HandleClick}>Globel <i className="fa-solid fa-globe icon "></i></a> 
-            <a  className='options ' id="Broadcast" onClick={HandleClick}>Broadcast <i className="fa-solid fa-podcast icon"></i></a>
+            {/* <a  className='options ' id="Broadcast" onClick={HandleClick}>Broadcast <i className="fa-solid fa-podcast icon"></i></a> */}
             <a  className='options ' id="Group" onClick={HandleClick}>Group <i className="fa-sharp fa-solid fa-people-group icon"></i></a>
             <a  className='options ' id="Privite" onClick={HandleClick}>Privite <i className="fa-solid fa-user-group icon"></i></a>
         </ul>

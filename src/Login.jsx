@@ -68,7 +68,7 @@ const DIV =styled.div`
     
 `
 export default function Login(props) {
-  
+  localStorage.clear()
   const InputRef = useRef()
   const navigate = useNavigate();
   function handleInit(typewriter){

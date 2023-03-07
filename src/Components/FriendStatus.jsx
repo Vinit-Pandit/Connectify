@@ -102,20 +102,22 @@ export default function FriendStatus(propes) {
   const friendArray = Friends.ShowFriends.map((obj) => obj.friendName)
 
   useEffect(() => {
+    console.log("under the client")
     propes.NameNsocket.Socket.on('Connected_clients', (data) => {
-
+      console.log(data)
       setFriends({ ...Friends, Online: [...data] })
+      console.log(Friends)
       propes.setParticipents({...propes.Participents , Globel:[...data]})
       console.log("Under the connected clients")
       
-    }, [Friends])
+    }, [Friends, propes.NameNsocket.Socket])
 
     return (() => {
-
+      console.log("clean up of the connected client is done")
       propes.NameNsocket.Socket.off('Connected_clients')
     })
-  })
-  const FriendsORonline = (propes.Option == "Globel" ? Friends["Online"] : friendArray)
+  } , [])
+  const FriendsORonline = (propes.Option == "Group" ?  friendArray: Friends["Online"])
 
   const HandlingBar = (e) => {
 
@@ -175,7 +177,9 @@ export default function FriendStatus(propes) {
         <span><i class="fa-solid fa-circle circle"></i><i class="fa-solid fa-user user"></i>     {propes.arr[0]}</span>
         <span><i class="fa-solid fa-circle circle"></i><i class="fa-solid fa-user user"></i>     {propes.arr[0]}</span> */}
 
-      <span className='OnlFri'>{(propes.Option) == "Globel" ? "Online" : "Friends"}</span>
+      <span className='OnlFri'>{(propes.Option) == "Group" ? "Members" : "Online"}</span>
+      {/* <span className='OnlFri'>Online</span> */}
+     
       {console.log("Under the return ")}
       {FriendsORonline.map((element) => (
         <div key={element} onClick={HandlingBar} className="FriendsContainer">
@@ -194,6 +198,9 @@ export default function FriendStatus(propes) {
           </div>
         </div>
       ))}
+
+
+        
 
 
     </FrSt>

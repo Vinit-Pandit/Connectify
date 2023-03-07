@@ -125,9 +125,12 @@ export default function Chat_window(props) {
   
   // const [MessagesAry, setMessagesAry] = useState([{message : "" , msgside :""}])
   
+
+
+  //Ignore the Broadcast 
   const [MessagesAry , setMessagesAry] = useState(
     {
-      Globel:{Messages:[{msg:"" , side:"" , sender:""}]} ,
+      Globel:{Messages:[{msg:"" , side:"" , sender:"" }]} ,
       Broadcast:{Messages:[{msg:"", side:"" , sender:""}]} , 
       Group:{Messages:[{msg:"" , side:"" , sender:""}]}  , 
       Privite:{Messages:[{msg:"" , side:"" , sender:""}]}
@@ -139,34 +142,50 @@ export default function Chat_window(props) {
       // Handling the recieve event ******************************************************
       console.log(`useEffect is running for component instance ${props.id}`);
       console.log(MessagesAry)
-      props.NameNsocket.Socket.on('user-join' , (name)=>{
-        appendMsg(`${name} join the chat ` , "left" , "NEW")
-      })
-      props.NameNsocket.Socket.on('recive' , (data)=>{
+      // props.NameNsocket.Socket.on('user-join' , (name)=>{
+      //   if (name != props.NameNsocket.Name) {
+      //     console.log("new User Connected")
+      //     appendMsg(`${name} join the chat ` , "left" , "NEW" , "Globel")
+          
+      //   }
+      // })
+
+      // props.NameNsocket.Socket.on('user-disconnected',(name)=>{
+      //   appendMsg(`${name} leave the chat ` , "left" , "NEW" , "Globel")
+      // })
+      
+      
+      props.NameNsocket.Socket.on('recive' , (MsgData)=>{
    
-    
-        if (data.Uname.trim()!=props.NameNsocket.Name.trim()) {
-          console.log("recive")
-          console.log("under the if")
-          appendMsg(data.message ,"left" , data.Uname)
+        console.log("recive")
+        console.log("under the if")
+        console.log('recieve is called')
+        if (MsgData.type == "Globel") {
+          appendMsg(MsgData.message ,"left" , MsgData.Uname ,MsgData.type)
           props.NameNsocket.Socket.off('recive')
           
         }
         else{
-          console.log("else is running")
+          
+                    
+          props.setParticipents({...props.Participents , [MsgData.type]:[MsgData.Uname]})
+          appendMsg(MsgData.message ,"left" , MsgData.Uname ,MsgData.type)
         }
-      },[MessagesAry])
-
+          
+        
+        
+      })
+      
    
       return ()=>{
         console.log("Clean Up is run")
         
-        props.NameNsocket.Socket.off('recive')
         props.NameNsocket.Socket.off('user-join')
+        props.NameNsocket.Socket.off('recive')
       }
     })
-  
-
+    
+    
   
 
   
@@ -177,16 +196,16 @@ export default function Chat_window(props) {
  
 
   //Append function *****************************************************************
-  const appendMsg=(msg , side , senderName)=>{
+  const appendMsg=(msg , side , senderName , type)=>{
     console.log("under the append")
     
     
     
     setMessagesAry((MessagesAry)=>{
       return {
-        ...MessagesAry , [props.Option]:{
-          ...MessagesAry[props.Option] , Messages:[
-            ...MessagesAry[props.Option].Messages ,{msg:msg , side:side , sender:senderName}
+        ...MessagesAry , [type]:{
+          ...MessagesAry[type] , Messages:[
+            ...MessagesAry[type].Messages ,{msg:msg , side:side , sender:senderName}
           ]
         }
       }
@@ -214,10 +233,18 @@ export default function Chat_window(props) {
     console.log(MessagesAry.Globel)
     if (InputRef.current.value.trim()!="") {
       
-      appendMsg(`${InputRef.current.value}` , 'right' , props.NameNsocket.Name)
+      appendMsg(`${InputRef.current.value}` , 'right' , props.NameNsocket.Name ,props.Option)
       
       console.log("Under the handle click")
-      props.NameNsocket.Socket.emit('send' , {message:(InputRef.current.value) , Uname : (props.NameNsocket.Name)});
+      console.log(props.NameNsocket.Socket)
+      if (props.Option =="Globel") {
+        
+        props.NameNsocket.Socket.emit('send' , {message:(InputRef.current.value) , Uname : (props.NameNsocket.Name), type:(props.Option)});
+      }
+      else{
+        props.NameNsocket.Socket.emit('send' , {message:(InputRef.current.value) , Uname : (props.NameNsocket.Name), type:(props.Option) ,to:props.Participents.Privite});
+
+      }
       
       
     }

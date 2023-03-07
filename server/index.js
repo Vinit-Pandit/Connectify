@@ -10,25 +10,46 @@ var io = require('socket.io')(server, {
 const userSocketMap ={}
 const connectedClients = new Map();
 
+
 io.on('connection' , (socket)=>{
+    let Username ;
+    
     socket.on('new-user-join' , (name)=>{
         console.log("new_connection ")
-        connectedClients.set(socket.id , name)
-
-        io.emit('Connected_clients' , Array.from(connectedClients.values()))
+        connectedClients.set(name , socket.id)
+        Username = name;
+    
+        io.emit('Connected_clients' , Array.from(connectedClients.keys()))
         userSocketMap[socket.id] = socket;
-        socket.broadcast.emit('user-join' ,name)
+        // socket.broadcast.emit('user-join' ,name)
+        io.emit('user-join' ,name)
 
     })
+
 
     socket.on('disconnect' , ()=>{
-        connectedClients.delete(socket.id)
-        io.emit('Connected_clients' , Array.from(connectedClients.values()))
+        connectedClients.delete(Username)
+        
+        
+        socket.broadcast.emit('user-disconnected', Username)
+        io.emit('Connected_clients' , Array.from(connectedClients.keys()))
     })
 
-    socket.on('send' , (message)=>{
+    socket.on('send' , (data)=>{
         console.log("send is call")
-        socket.broadcast.emit('recive' ,message)
+        console.log(socket.id)
+        if(data.type == "Globel")
+        {
+            socket.broadcast.emit('recive' ,data)
+
+        }
+        else{
+            console.log(...data.to)
+            console.log(connectedClients.get(...data.to))
+            io.to(connectedClients.get(...data.to)).emit('recive' , data)
+            
+            
+        }
     })
     
 })
