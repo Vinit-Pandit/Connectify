@@ -99,8 +99,8 @@ const FrSt = styled.div`
 `
 
 export default function FriendStatus(propes) {
-  const [Friends, setFriends] = useState({ ShowMembers: [], Online: [] })
-  const friendArray = Friends.ShowMembers.map((obj) => obj.friendName)
+  const [Friends, setFriends] = useState({  Online: [] })
+  
 
   useEffect(() => {
     console.log("under the client")
@@ -159,32 +159,33 @@ export default function FriendStatus(propes) {
     const OnlineUsers = Friends.Online
 
     const FriendName = e.currentTarget.dataset.frname
-    console.log(friendArray)
-    if (!(Friends.ShowMembers).includes(FriendName) && FriendName != propes.NameNsocket.Name) {
+    
+    if (!(propes.Participents["Group"]).includes(FriendName) && FriendName != propes.NameNsocket.Name) {
       console.log("friend added")
       // setFriends({ ShowMembers: [...Friends.ShowMembers, { friendName: FriendName, online: (OnlineUsers.includes(FriendName)) }], Online: [...Friends.Online] })
-      setFriends({ ShowMembers: [...Friends.ShowMembers , FriendName], Online: [...Friends.Online] })
+
+      // setFriends({ ShowMembers: [...Friends.ShowMembers , FriendName], Online: [...Friends.Online] })
       propes.setParticipents({...propes.Participents , Group:[...propes.Participents.Group , FriendName]})
       console.log(propes.Participents.Group)
 
 
     }
 
-    console.log(Friends.ShowMembers)
+    // console.log(Friends.ShowMembers)
 
   }
   const HandleRemoveGroup=(e)=>{
     const bar = e.target.parentElement.parentElement
     bar.classList.remove("show")
     const FriendName = e.currentTarget.dataset.frname
-    console.log(Friends.ShowMembers)
-    const  CurrentMembers =  Friends.ShowMembers
+    // console.log(Friends.ShowMembers)
+    const  CurrentMembers =  propes.Participents["Group"]
     console.log( CurrentMembers)
     const IndexOfFriend = CurrentMembers.indexOf(FriendName)
     console.log(IndexOfFriend)
 
     CurrentMembers.splice(0 , 1)
-    setFriends({...Friends , ShowMembers:[...CurrentMembers]})
+    // setFriends({...Friends , ShowMembers:[...CurrentMembers]})
     propes.setParticipents({...propes.Participents , Group:[...CurrentMembers]})
     
 
