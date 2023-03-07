@@ -44,9 +44,11 @@ io.on('connection' , (socket)=>{
 
         }
         else{
-            console.log(...data.to)
-            console.log(connectedClients.get(...data.to))
-            io.to(connectedClients.get(...data.to)).emit('recive' , data)
+            console.log(data.to)
+            data.to.forEach(element => {
+                io.to(connectedClients.get(element)).emit('recive' , data)
+                
+            });
             
             
         }
