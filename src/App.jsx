@@ -13,7 +13,8 @@ function App() {
     if (enterdname) {
       console.log("function is called")
       
-      const socket = io("http://localhost:8000")
+      // const socket = io("http://localhost:8000")
+      const socket = io("https://chat-app-t22q.onrender.com")
       setSocketNname({Name:`${enterdname}` , Socket :socket})
       localStorage.setItem("UserName", enterdname)
       socket.emit('new-user-join' , enterdname) 

@@ -1,11 +1,32 @@
 const express = require("express")
+const path = require("path")
 var app = express();
-var server = app.listen(8000);
+const port = 8000;
+console.log(port)
+var server = app.listen(port)
 var io = require('socket.io')(server, {
+    pingTimeout:60000,
     cors: {
-      origin: '*',
+        origin: '*',
     }
 });
+
+console.log("js file is running this is the server " + io)
+
+//--------------------------------deployment--------------------------//
+
+app.use(express.static(path.join(__dirname ,"../dist")  ))
+// app.use(express.static(path.join(__dirname ,"../vite-project/dist/assets/index-33c86c42.js")  ))
+
+app.get("*", (req , res)=>{
+    console.log("File is serving ")
+    res.sendFile(path.join(__dirname ,"../dist/index.html"))
+    // res.sendFile(path.join(__dirname ,"../vite-project/dist/assets/index-33c86c42.js"))
+})
+
+//--------------------------------deployment--------------------------//
+
+
 
 const userSocketMap ={}
 const connectedClients = new Map();
@@ -18,12 +39,12 @@ io.on('connection' , (socket)=>{
         console.log("new_connection ")
         connectedClients.set(name , socket.id)
         Username = name;
-    
+        
         io.emit('Connected_clients' , Array.from(connectedClients.keys()))
         userSocketMap[socket.id] = socket;
         // socket.broadcast.emit('user-join' ,name)
         io.emit('user-join' ,name)
-
+        
     })
 
 
@@ -34,14 +55,14 @@ io.on('connection' , (socket)=>{
         socket.broadcast.emit('user-disconnected', Username)
         io.emit('Connected_clients' , Array.from(connectedClients.keys()))
     })
-
+    
     socket.on('send' , (data)=>{
         console.log("send is call")
         console.log(socket.id)
         if(data.type == "Globel")
         {
             socket.broadcast.emit('recive' ,data)
-
+            
         }
         else{
             console.log(data.to)
