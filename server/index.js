@@ -5,28 +5,29 @@ const port = 8000;
 console.log(port)
 var server = app.listen(port)
 var io = require('socket.io')(server, {
-    pingTimeout:60000,
+    
     cors: {
         origin: '*',
     }
 });
 
-console.log("js file is running this is the server " + io)
+// console.log("js file is running this is the server " + io)
 
 //--------------------------------deployment--------------------------//
 
-app.use(express.static(path.join(__dirname ,"../dist")  ))
+// app.use(express.static(path.join(__dirname ,"../dist")  ))
 // app.use(express.static(path.join(__dirname ,"../vite-project/dist/assets/index-33c86c42.js")  ))
 
-app.get("*", (req , res)=>{
-    console.log("File is serving ")
-    res.sendFile(path.join(__dirname ,"../dist/index.html"))
+// app.get("*", (req , res)=>{
+    // console.log("File is serving ")
+    // res.sendFile(path.join(__dirname ,"../dist/index.html"))
     // res.sendFile(path.join(__dirname ,"../vite-project/dist/assets/index-33c86c42.js"))
-})
+// })
 
 //--------------------------------deployment--------------------------//
-
-
+app.get("/testing" , (req , res)=>{
+    res.send("testing")
+})
 
 const userSocketMap ={}
 const connectedClients = new Map();
@@ -75,4 +76,12 @@ io.on('connection' , (socket)=>{
         }
     })
     
+})
+
+app.post('/SignUp' , (req , res)=>{
+    console.log("recive the request")
+    const data = req.body ;
+    console.log(data)
+    res.send(`UserName : ${data.UserName}  , password : ${data.Password}`)
+   
 })

@@ -127,26 +127,21 @@ export default function FriendStatus(propes) {
   } , [])
   // const FriendsORonline = (propes.Option == "Group" ?  Friends[]: Friends["Online"])
 
+
+
+  
+
+
   const HandlingBar = (e) => {
-
-
     const parent = (e.target.nodeName) == "DIV" ? (e.target) : (e.target.parentElement)
     const bar = parent.querySelector(".bar")
-
     if (bar) {
       bar.style.top = `${e.pageY}px`
       Array.from(document.getElementsByClassName('bar')).forEach((elm) => {
         elm.classList.remove("show")
       })
       bar.classList.add('show')
-
     }
-
-
-
-
-
-
   }
 
   const CloseTheBar = (e) => {
