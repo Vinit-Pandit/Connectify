@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import styled from "styled-components"
 import TypeWriterEffect from 'typewriter-effect'
 import { useState, useEffect, Ref } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, json } from 'react-router-dom'
 import Dashboard from './Dashboard'
 import { useNavigate } from 'react-router-dom'
 import { redirect } from 'react-router-dom'
@@ -87,22 +87,32 @@ export default function Login(props) {
   //********************************Function to send the credintials to the server*********
 
 
-  async  function  sendCredentials(UserName , password){
-    console.log(UserName)
+  async function sendCredentials(UserName, password) {
+    console.log(password)
     let headerList = {
-      "Content-Type" : "application/json"
+      "Content-Type": "application/json"
     }
-    let BodyList ={
-      "UserName" : UserName ,
-      "Password" : Password
+    let BodyList = {
+      "UserName": UserName,
+      "Password": password
     }
-    let response = await fetch("https://localhost:8000/SignUp" ,{
-      method:"POST",
-      body : bodyContent ,
-      headers : headerList
-    })
-    console.log(response)
+
+
+
+    let response = await fetch("http://localhost:8000/SignUp", {
+      method: "POST",
+      body: JSON.stringify(BodyList),
+      headers: headerList
+    }).then((res) => res.json()).then((data) => data)
+
+    return response
+
+
+
   }
+
+
+
 
   /**************************** */
 
@@ -112,27 +122,29 @@ export default function Login(props) {
   const HandleRedirect = (e) => {
 
 
-    if (InputRefUserName.current.value.trim() === '' ) {
-
-
+    if (InputRefUserName.current.value.trim() === '') {
       console.log("i am running")
-
-      
       InputRefUserName.current.style.border = "2px solid red"
-     
     }
-    else if(InputRefPassword.current.value.trim() === '' )
-    {
+
+    else if (InputRefPassword.current.value.trim() === '') {
       InputRefPassword.current.style.border = "2px solid red"
     }
 
     else {
       console.log("else is runnning")
-      // e.preventDefault()
+      sendCredentials(InputRefUserName.current.value, InputRefPassword.current.value).then(
+        (res) => {
+          if (res.authorize) {
+            props.setNameValue(`${InputRefUserName.current.value}`)
+            navigate("/Dashboard")
+          }
+          else {
+            console.log("authorization is fales")
+          }
+        }
+      )
       
-      sendCredentials(InputRefUserName.current.value , InputRefPassword.current.value)
-      props.setNameValue(`${InputRefUserName.current.value}`)
-      navigate("/Dashboard")
 
 
     }
@@ -171,7 +183,7 @@ export default function Login(props) {
         <input type="text" placeholder='UserName' className='UserName' ref={InputRefUserName} onKeyDown={(e) => { e.key == "Enter" ? HandleRedirect() : null }} />
 
         <input type="text" placeholder='Password' className='UserName' ref={InputRefPassword}
-        onKeyDown={(e) => { e.key == "Enter" ? HandleRedirect() : null }}/>
+          onKeyDown={(e) => { e.key == "Enter" ? HandleRedirect() : null }} />
 
         <div className='Btns'>
           <button className='LetsGoBtn' onClick={HandleRedirect}>Log In</button>

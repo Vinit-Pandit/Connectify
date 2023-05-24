@@ -35,9 +35,9 @@ function App() {
         
         <Route path='/' element={<Login setNameValue = {GettingNameSocket} />}></Route>
        {
-        //  (SocketNname.Socket)?
-        //  <Route exact path="/Dashboard" element ={<Dashboard NameNsocket={SocketNname}/>}/>:
-        //  GettingNameSocket(localStorage.getItem('UserName'))
+         (SocketNname.Socket)?
+         <Route exact path="/Dashboard" element ={<Dashboard NameNsocket={SocketNname}/>}/>:
+         GettingNameSocket(localStorage.getItem('UserName'))
          
          
        }

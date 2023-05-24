@@ -1,6 +1,10 @@
-const express = require("express")
+const express = require("express");
+const { reset } = require("nodemon");
+const cors = require('cors');
 const path = require("path")
 var app = express();
+
+
 const port = 8000;
 console.log(port)
 var server = app.listen(port)
@@ -26,7 +30,8 @@ var io = require('socket.io')(server, {
 
 //--------------------------------deployment--------------------------//
 app.get("/testing" , (req , res)=>{
-    res.send("testing")
+    
+    res.end()
 })
 
 const userSocketMap ={}
@@ -78,10 +83,16 @@ io.on('connection' , (socket)=>{
     
 })
 
-app.post('/SignUp' , (req , res)=>{
+
+// app.use(cors());
+app.options('/SignUp', cors())
+app.use(express.json());
+
+app.post('/SignUp' , cors() ,(req , res)=>{
     console.log("recive the request")
-    const data = req.body ;
+    const data = req.body;
     console.log(data)
-    res.send(`UserName : ${data.UserName}  , password : ${data.Password}`)
+    res.send({UserName : data.UserName  , password : data.Password , authorize:true})
+    res.end()
    
 })
