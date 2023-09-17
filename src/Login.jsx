@@ -87,14 +87,15 @@ export default function Login(props) {
   //********************************Function to send the credintials to the server*********
 
 
-  async function sendCredentials(UserName, password) {
+  async function sendCredentials(UserName, password , Way) {
     console.log(password)
     let headerList = {
       "Content-Type": "application/json"
     }
     let BodyList = {
       "UserName": UserName,
-      "Password": password
+      "Password": password,
+      "Way" : Way
     }
 
 
@@ -121,9 +122,9 @@ export default function Login(props) {
 
   const HandleRedirect = (e) => {
 
-
+    const Way = e.target.getAttribute("Name")
     if (InputRefUserName.current.value.trim() === '') {
-      console.log("i am running")
+      // console.log("i am running")
       InputRefUserName.current.style.border = "2px solid red"
     }
 
@@ -133,7 +134,7 @@ export default function Login(props) {
 
     else {
       console.log("else is runnning")
-      sendCredentials(InputRefUserName.current.value, InputRefPassword.current.value).then(
+      sendCredentials(InputRefUserName.current.value, InputRefPassword.current.value , Way).then(
         (res) => {
           if (res.authorize) {
             props.setNameValue(`${InputRefUserName.current.value}`)
@@ -185,9 +186,9 @@ export default function Login(props) {
         <input type="text" placeholder='Password' className='UserName' ref={InputRefPassword}
           onKeyDown={(e) => { e.key == "Enter" ? HandleRedirect() : null }} />
 
-        <div className='Btns'>
-          <button className='LetsGoBtn' onClick={HandleRedirect}>Log In</button>
-          <button className='LetsGoBtn'>Sign Up</button>
+        <div className='Btns' onClick={HandleRedirect}>
+          <button className='LetsGoBtn' Name = 'LogIn'>Log In</button>
+          <button className='LetsGoBtn' Name='SignUp'> Sign Up</button>
 
         </div>
 

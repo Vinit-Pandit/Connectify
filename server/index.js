@@ -3,6 +3,7 @@ const { reset } = require("nodemon");
 const cors = require('cors');
 const path = require("path")
 var app = express();
+const login_SignUp =  require("./Db")
 
 
 const port = 8000;
@@ -92,7 +93,12 @@ app.post('/SignUp' , cors() ,(req , res)=>{
     console.log("recive the request")
     const data = req.body;
     console.log(data)
-    res.send({UserName : data.UserName  , password : data.Password , authorize:true})
-    res.end()
+    const authorized = login_SignUp(data.UserName , data.Password , data.Way)
+    authorized.then((data)=>{
+        console.log(data)
+        res.send({UserName : data.UserName  , password : data.Password , authorize:data})
+        res.end()
+
+    })
    
 })
