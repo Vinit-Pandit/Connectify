@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { useState } from 'react'
 import Message from './Message'
-
+import getSocket from '../Socket'
 
 const Chat_Box = styled.div`
     
@@ -125,8 +125,7 @@ export default function Chat_window(props) {
   
   // const [MessagesAry, setMessagesAry] = useState([{message : "" , msgside :""}])
   
-
-
+  const Socket = getSocket(props.Name.Name);
   //Ignore the Broadcast 
   const [MessagesAry , setMessagesAry] = useState(
     {
@@ -142,27 +141,16 @@ export default function Chat_window(props) {
       // Handling the recieve event ******************************************************
       console.log(`useEffect is running for component instance ${props.id}`);
       console.log(MessagesAry)
-      // props.NameNsocket.Socket.on('user-join' , (name)=>{
-      //   if (name != props.NameNsocket.Name) {
-      //     console.log("new User Connected")
-      //     appendMsg(`${name} join the chat ` , "left" , "NEW" , "Globel")
-          
-      //   }
-      // })
-
-      // props.NameNsocket.Socket.on('user-disconnected',(name)=>{
-      //   appendMsg(`${name} leave the chat ` , "left" , "NEW" , "Globel")
-      // })
+     
       
-      
-      props.NameNsocket.Socket.on('recive' , (MsgData)=>{
+      Socket.on('recive' , (MsgData)=>{
    
         console.log("recive")
         console.log("under the if")
         console.log('recieve is called')
         if (MsgData.type == "Globel") {
           appendMsg(MsgData.message ,"left" , MsgData.Uname ,MsgData.type)
-          props.NameNsocket.Socket.off('recive')
+          Socket.off('recive')
           
         }
         else if(MsgData.type=="Privite"){
@@ -173,7 +161,7 @@ export default function Chat_window(props) {
         }
         else{
           const members = MsgData.Group
-          members.splice(members.indexOf(props.NameNsocket.Name) , 1)
+          members.splice(members.indexOf(props.Name.Name) , 1)
 
           props.setParticipents({...props.Participents , [MsgData.type]:[...members]})
           appendMsg(MsgData.message ,"left" , MsgData.Uname ,MsgData.type)
@@ -187,8 +175,8 @@ export default function Chat_window(props) {
       return ()=>{
         console.log("Clean Up is run")
         
-        props.NameNsocket.Socket.off('user-join')
-        props.NameNsocket.Socket.off('recive')
+        Socket.off('user-join')
+        Socket.off('recive')
       }
     })
     
@@ -240,20 +228,20 @@ export default function Chat_window(props) {
     console.log(MessagesAry.Globel)
     if (InputRef.current.value.trim()!="") {
       
-      appendMsg(`${InputRef.current.value}` , 'right' , props.NameNsocket.Name ,props.Option)
+      appendMsg(`${InputRef.current.value}` , 'right' , props.Name.Name ,props.Option)
       
       console.log("Under the handle click")
-      console.log(props.NameNsocket.Socket)
+      console.log(Socket)
       if (props.Option =="Globel") {
         
-        props.NameNsocket.Socket.emit('send' , {message:(InputRef.current.value) , Uname : (props.NameNsocket.Name), type:(props.Option)});
+        Socket.emit('send' , {message:(InputRef.current.value) , Uname : (props.Name.Name), type:(props.Option)});
       }
       else if(props.Option=="Privite"){
-        props.NameNsocket.Socket.emit('send' , {message:(InputRef.current.value) , Uname : (props.NameNsocket.Name), type:(props.Option) ,to:props.Participents[props.Option] });
+        Socket.emit('send' , {message:(InputRef.current.value) , Uname : (props.Name.Name), type:(props.Option) ,to:props.Participents[props.Option] });
 
       }
       else{
-        props.NameNsocket.Socket.emit('send' , {message:(InputRef.current.value) , Uname : (props.NameNsocket.Name), type:(props.Option) ,to:props.Participents[props.Option] , Group:[...props.Participents[props.Option] , props.NameNsocket.Name]});
+        Socket.emit('send' , {message:(InputRef.current.value) , Uname : (props.Name.Name), type:(props.Option) ,to:props.Participents[props.Option] , Group:[...props.Participents[props.Option] , props.Name.Name]});
       }
       
       
@@ -299,7 +287,7 @@ export default function Chat_window(props) {
         {MessagesAry[props.Option].Messages.map((data, index) => {
           
           if (data.msg.trim()!="") {
-            return <Message message={`${(data.sender)==(props.NameNsocket.Name)?"You":data.sender}:  ${data.msg}`} dir={data.side} key={index} />
+            return <Message message={`${(data.sender)==(props.Name.Name)?"You":data.sender}:  ${data.msg}`} dir={data.side} key={index} />
             
           }
           

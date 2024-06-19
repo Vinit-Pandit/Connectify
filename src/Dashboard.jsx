@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import Chat_window from './Components/Chat_window'
 import Chat_Options from './Components/Chat_Options'
 import FriendStatus from './Components/FriendStatus'
+import { useLocation } from 'react-router-dom'
 
 const DIV =styled.div `
   width: 100%;
@@ -16,7 +17,9 @@ const DIV =styled.div `
   
 `
 export default function Dashboard(Props) {
-  
+
+  const location = useLocation();
+  const {Name} = location.state || {}
   console.log("under the dashborad")
   const [Option ,setOption] =useState('Globel')
   //igonre the broadcast
@@ -26,9 +29,9 @@ export default function Dashboard(Props) {
   
     return (
       <DIV id='Dashboard'>
-        <Chat_Options setOp={setOption} NameNsocket={Props.NameNsocket} Option={Option}/>
-        <Chat_window Option={Option} NameNsocket={Props.NameNsocket} Participents={Participents} setParticipents={setParticipents}/>
-        <FriendStatus  NameNsocket={Props.NameNsocket} Option={Option} setOp={setOption} Participents={Participents} setParticipents={setParticipents}/>
+        <Chat_Options setOp={setOption}  Option={Option} Name = {{Name:Name }}/>
+        <Chat_window Option={Option} Participents={Participents} setParticipents={setParticipents}  Name = {{Name:Name }}/>
+        <FriendStatus Option={Option} setOp={setOption} Participents={Participents} setParticipents={setParticipents}  Name = {{Name:Name }}/>
         
   
       </DIV>

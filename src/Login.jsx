@@ -6,6 +6,8 @@ import { Link, json } from 'react-router-dom'
 import Dashboard from './Dashboard'
 import { useNavigate } from 'react-router-dom'
 import { redirect } from 'react-router-dom'
+import getSocket from './Socket'
+
 
 
 const DIV = styled.div`
@@ -75,11 +77,12 @@ const DIV = styled.div`
 export default function Login(props) {
   localStorage.clear()
   const InputRefUserName = useRef()
-  const InputRefPassword = useRef()
+  const [UserName  , setName] = useState("");
+  const [Password , setPassword] = useState ("")
   const navigate = useNavigate();
   function handleInit(typewriter) {
     typewriter.typeString('Chat With Your Buddies ,')
-    typewriter.typeString('Enter your Credintials ')
+    typewriter.typeString('Enter your UserName ')
     typewriter.deleteChars(1)
     typewriter.start()
   }
@@ -104,14 +107,32 @@ export default function Login(props) {
       method: "POST",
       body: JSON.stringify(BodyList),
       headers: headerList
-    }).then((res) => res.json()).then((data) => data)
-
+    }).then((res) => res.json()).then((data)=>data).catch((e)=>{
+      console.log(err)
+    })
+    
+    console.log(response)
     return response
 
 
 
   }
 
+
+  // function GettingNameSocket(enterdname) {
+  //   if (enterdname) {
+  //     console.log("function is called")
+      
+  //     const socket = io("http://localhost:8000")
+  //     // const socket = io("https://chat-app-t22q.onrender.com")
+  //     setSocketNname({Name:`${enterdname}` , Socket :socket})
+  //     localStorage.setItem("UserName", enterdname)
+  //     socket.emit('new-user-join' , enterdname) 
+      
+      
+  //   }
+    
+  // }
 
 
 
@@ -122,35 +143,34 @@ export default function Login(props) {
 
   const HandleRedirect = (e) => {
 
-    const Way = e.target.getAttribute("Name")
+    const Way = e.target.getAttribute("name")
     if (InputRefUserName.current.value.trim() === '') {
       // console.log("i am running")
       InputRefUserName.current.style.border = "2px solid red"
     }
 
-    else if (InputRefPassword.current.value.trim() === '') {
-      InputRefPassword.current.style.border = "2px solid red"
-    }
+    // else if (InputRefPassword.current.value.trim() === '') {
+    //   InputRefPassword.current.style.border = "2px solid red"
+    // }
 
     else {
       console.log("else is runnning")
-      sendCredentials(InputRefUserName.current.value, InputRefPassword.current.value , Way).then(
+      sendCredentials(UserName, Password , Way).then(
         (res) => {
           if (res.authorize) {
-            props.setNameValue(`${InputRefUserName.current.value}`)
-            navigate("/Dashboard")
+            // props.setNameValue(`${InputRefUserName.current.value}`)
+            const socket = io("http://localhost:8000")
+            // const socket = io("https://chat-app-t22q.onrender.com")
+            socket.emit('new-user-join' , UserName) 
+            getSocket(UserName);
+            navigate("/Dashboard" , {state :{Name : UserName}})
           }
           else {
             console.log("authorization is fales")
           }
         }
       )
-      
-
-
     }
-
-
   }
 
 
@@ -181,16 +201,8 @@ export default function Login(props) {
 
         />
 
-        <input type="text" placeholder='UserName' className='UserName' ref={InputRefUserName} onKeyDown={(e) => { e.key == "Enter" ? HandleRedirect() : null }} />
-
-        <input type="text" placeholder='Password' className='UserName' ref={InputRefPassword}
-          onKeyDown={(e) => { e.key == "Enter" ? HandleRedirect() : null }} />
-
-        <div className='Btns' onClick={HandleRedirect}>
-          <button className='LetsGoBtn' Name = 'LogIn'>Log In</button>
-          <button className='LetsGoBtn' Name='SignUp'> Sign Up</button>
-
-        </div>
+        <input type="text" placeholder='UserName' 
+         ref={InputRefUserName} className='UserName' onChange={(e)=>{setName(e.target.value)}} onKeyDown={(e) => { e.key == "Enter" ? HandleRedirect() : null }} />
 
       </div>
 

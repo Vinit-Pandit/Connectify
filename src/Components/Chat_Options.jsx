@@ -111,7 +111,7 @@ export default function Chat_Options(props) {
   return (
     <Chat_opt>
         <div className="UserNameProf">
-            <i className="fa-solid fa-user user">  </i>{props.NameNsocket.Name}
+            <i className="fa-solid fa-user user">  </i>{props.Name.Name}
         </div>
         <ul className='Opt_ul'>
 

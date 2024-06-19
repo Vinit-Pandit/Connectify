@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-
+import getSocket from '../Socket'
 const FrSt = styled.div`
     width: 15%;
     height: 100vh;
@@ -101,10 +101,11 @@ const FrSt = styled.div`
 export default function FriendStatus(propes) {
   const [Friends, setFriends] = useState({  Online: [] })
   
+  const Socket = getSocket(propes.Name.Name) ;
 
   useEffect(() => {
     console.log("under the client")
-    propes.NameNsocket.Socket.on('Connected_clients', (data) => {
+    Socket.on('Connected_clients', (data) => {
       console.log(data)
       setFriends({ ...Friends, Online: [...data] })
       console.log(Friends)
@@ -117,12 +118,12 @@ export default function FriendStatus(propes) {
       
       console.log("Under the connected clients")
       
-    }, [Friends, propes.NameNsocket.Socket])
+    }, [Friends, Socket])
 
     return (() => {
       console.log("clean up of the connected client is done")
       console.log(propes.Participents)
-      propes.NameNsocket.Socket.off('Connected_clients')
+      Socket.off('Connected_clients')
     })
   } , [])
   // const FriendsORonline = (propes.Option == "Group" ?  Friends[]: Friends["Online"])
@@ -155,7 +156,7 @@ export default function FriendStatus(propes) {
 
     const FriendName = e.currentTarget.dataset.frname
     
-    if (!(propes.Participents["Group"]).includes(FriendName) && FriendName != propes.NameNsocket.Name) {
+    if (!(propes.Participents["Group"]).includes(FriendName) && FriendName != propes.Name.Name) {
       console.log("friend added")
       // setFriends({ ShowMembers: [...Friends.ShowMembers, { friendName: FriendName, online: (OnlineUsers.includes(FriendName)) }], Online: [...Friends.Online] })
 
