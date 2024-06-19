@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import Chat_window from './Components/Chat_window'
 import Chat_Options from './Components/Chat_Options'
 import FriendStatus from './Components/FriendStatus'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const DIV =styled.div `
   width: 100%;
@@ -20,6 +20,14 @@ export default function Dashboard(Props) {
 
   const location = useLocation();
   const {Name} = location.state || {}
+  const navigate = useNavigate ()
+  
+  
+  useEffect(()=>{
+    if (Name == null) {
+      navigate("/" )
+    }
+  })
   console.log("under the dashborad")
   const [Option ,setOption] =useState('Globel')
   //igonre the broadcast

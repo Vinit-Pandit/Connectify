@@ -90,15 +90,14 @@ export default function Login(props) {
   //********************************Function to send the credintials to the server*********
 
 
-  async function sendCredentials(UserName, password , Way) {
+  async function sendCredentials(UserName, password ) {
     console.log(password)
     let headerList = {
       "Content-Type": "application/json"
     }
     let BodyList = {
       "UserName": UserName,
-      "Password": password,
-      "Way" : Way
+      "Password": password
     }
 
 
@@ -143,7 +142,9 @@ export default function Login(props) {
 
   const HandleRedirect = (e) => {
 
-    const Way = e.target.getAttribute("name")
+    // const Way = e.target.getAttribute("name")
+
+
     if (InputRefUserName.current.value.trim() === '') {
       // console.log("i am running")
       InputRefUserName.current.style.border = "2px solid red"
@@ -155,7 +156,7 @@ export default function Login(props) {
 
     else {
       console.log("else is runnning")
-      sendCredentials(UserName, Password , Way).then(
+      sendCredentials(UserName, Password ).then(
         (res) => {
           if (res.authorize) {
             // props.setNameValue(`${InputRefUserName.current.value}`)
@@ -201,7 +202,7 @@ export default function Login(props) {
 
         />
 
-        <input type="text" placeholder='UserName' 
+        <input type="text" placeholder='UserName'
          ref={InputRefUserName} className='UserName' onChange={(e)=>{setName(e.target.value)}} onKeyDown={(e) => { e.key == "Enter" ? HandleRedirect() : null }} />
 
       </div>
