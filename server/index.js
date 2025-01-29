@@ -3,9 +3,6 @@ const { reset } = require("nodemon");
 const cors = require('cors');
 const path = require("path")
 var app = express();
-
-
-
 const port = 8000;
 console.log(port)
 var server = app.listen(port)
